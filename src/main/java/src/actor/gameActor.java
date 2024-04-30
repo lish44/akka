@@ -1,30 +1,32 @@
 package src.actor;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.actor.Cancellable;
 import akka.actor.Props;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import scala.Option;
 import scala.concurrent.duration.Duration;
+import src.actor.client.clientActor;
 import src.handle.login;
 
 /**
  * {@code @author:} wh
  * {@code @date:} 2024/4/25 23:58
  */
-public class gameActor extends AbstractActor implements Runnable {
+public class gameActor extends AbstractActor {
+
+    private final List<ActorRef> clientActors = new ArrayList<>();
+
 
     public static Props props() {
         return Props.create(gameActor.class);
-    }
-
-    int a;
-    @Override public void run() {
-
-        System.out.println("I'm breathing");
-        if (a++ > 4) {
-            int b =  1/0;
-        }
     }
 
     public static class ShutdownMessage {
@@ -33,7 +35,7 @@ public class gameActor extends AbstractActor implements Runnable {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(String[].class, login::handle)
+                .match(String.class, this::handle)
                 .match(ShutdownMessage.class, msg -> {
                     getContext().stop(getSelf());
                 })
@@ -41,24 +43,30 @@ public class gameActor extends AbstractActor implements Runnable {
     }
 
 
-    private Cancellable cancellable;
-
     @Override
     public void preStart() throws Exception {
         super.preStart();
-
-        cancellable =  getContext().system().scheduler().scheduleWithFixedDelay(
-                Duration.Zero(), // 延迟时间，立即执行
-                Duration.create(1, TimeUnit.SECONDS), // 间隔时间，每秒执行一次
-                this,
-                getContext().system().dispatcher() // 使用默认的调度器
-        );
-
+        getContext().actorOf(worldService.props(), "worldService");
     }
 
     @Override
     public void postStop() {
         getContext().getSystem().terminate();
-        cancellable.cancel();
+    }
+
+    public void handle(String msg) {
+
+        switch (msg) {
+            case "creat":
+                ActorRef c = getContext().actorOf(clientActor.props(), "client" + UUID.randomUUID());
+                clientActors.add(c);
+                break;
+            case "login":
+                for (ActorRef clientActor : clientActors) {
+                    clientActor.tell("login", getSelf());
+                }
+            default:
+                System.out.println("I'm handling " + msg);
+        }
     }
 }

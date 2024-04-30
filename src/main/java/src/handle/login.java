@@ -6,5 +6,6 @@ package src.handle;
  */
 public class login {
     public static void handle(String[] args) {
+
     }
 }

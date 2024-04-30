@@ -18,12 +18,14 @@ dependencies {
     def versions = [
             ScalaBinary: "2.13"
     ]
-    dependencies {
-        implementation platform("com.typesafe.akka:akka-bom_${versions.ScalaBinary}:2.9.2")
+    implementation platform("com.typesafe.akka:akka-bom_${versions.ScalaBinary}:2.9.2")
 
-        implementation "com.typesafe.akka:akka-actor-typed_${versions.ScalaBinary}"
-    }
+    implementation "com.typesafe.akka:akka-actor-typed_${versions.ScalaBinary}"
     implementation 'org.slf4j:slf4j-simple:1.7.32'
+
+    implementation "org.java-websocket:Java-WebSocket:1.5.3"
+
+    implementation fileTree(dir: '../3rd/jar', include: ['*.jar'])
 }
 
 test {
