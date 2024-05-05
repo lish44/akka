@@ -2,7 +2,7 @@ package src.allInOne;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import src.actor.gameActor;
+import src.actor.worldService;
 
 /**
  * {@code @author:} wh
@@ -11,14 +11,14 @@ import src.actor.gameActor;
 public class allInOne {
     public static void main(String[] args) throws InterruptedException {
 
-        ActorSystem system = ActorSystem.create("GameSystem");
-        ActorRef gameActor = system.actorOf(src.actor.gameActor.props(), "gameActor");
+        ActorSystem app = ActorSystem.create("App");
+        ActorRef world = app.actorOf(worldService.props(), "worldService");
 
-        gameActor.tell("creat", ActorRef.noSender());
+        world.tell("creat", ActorRef.noSender());
 
         Thread.sleep(2000);
 
-        gameActor.tell("login", ActorRef.noSender());
+        world.tell("login", ActorRef.noSender());
 
         // gameActor.tell(new src.actor.gameActor.ShutdownMessage(), ActorRef.noSender());
 

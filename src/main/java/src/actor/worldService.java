@@ -6,7 +6,9 @@ import com.game.net.framework.server.WsClientConnection;
 import com.game.net.framework.server.WsClientConnectionListener;
 import com.game.net.framework.server.WsClientConnectionListenerFactory;
 import com.game.net.framework.server.WsNetServer;
+import com.sunweb.game.util.DateUtil;
 import src.actor.client.conn;
+import src.packet.loginMsg;
 
 /**
  * @author wh
@@ -41,7 +43,10 @@ public class worldService extends AbstractActor implements WsClientConnectionLis
     @Override
     public void preStart() throws Exception {
         super.preStart();
-        server = new WsNetServer(8080);
+        server = new WsNetServer(7700);
+        server.setManagerTimeOutInMS((int) (DateUtil.MS_PER_MINUTE));
+        server.setClientConnectionListenerFactory(this);
+        server.getCommandSet().addCommandClasses(new Class[] {loginMsg.class});
         server.start();
     }
 

@@ -4,6 +4,7 @@ import com.game.net.framework.command.NetCommand;
 import com.game.net.framework.command.UnknownCommand;
 import com.game.net.framework.server.WsClientConnection;
 import com.game.net.framework.server.WsClientConnectionListener;
+import src.packet.loginMsg;
 
 /**
  * @author wh
@@ -20,6 +21,9 @@ public class conn implements WsClientConnectionListener {
     @Override
     public void onCommand(NetCommand netCommand) {
 
+        var m = (loginMsg)netCommand;
+        m.getRsp().setSsid("123456");
+        conn.sendCommand(m);
     }
 
     @Override
