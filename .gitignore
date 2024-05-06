@@ -27,3 +27,4 @@ build/tmp/compileJava
 gradle/wrapper
 .idea
 build
+src/main/java/.DS_Store

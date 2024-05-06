@@ -1,6 +1,7 @@
 package src.bases;
 
 import java.util.function.Supplier;
+
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
@@ -21,7 +22,7 @@ public class GPool<T> {
         return pool.borrowObject();
     }
 
-    public void returnObj(T obj) {
+    public void put(T obj) {
         pool.returnObject(obj);
     }
 }
